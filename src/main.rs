@@ -31,7 +31,6 @@ fn main() {
         let from = get_header(&parsed, "from").unwrap_or("".into());
         let body = parsed.get_body().unwrap_or("".into());
         let subject = get_header(&parsed, "subject").unwrap_or("".into());
-        println!("Indexing email with to={} from={} subject={}", to, from, subject);
         let doc = doc!(
             to_field => to,
             from_field => from,

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style types="text/css">
+            #content-wrapper {
+                max-width: 900px;
+                margin: 20px auto;
+            }
+            #search {
+                width: 100%;
+                line-height: 3em;
+                padding: 0 0.5em;
+            }
+            .result {
+                margin: 5px 0;
+                padding: 5px;
+                border: 1px solid lightgrey;
+                border-radius: 3px;
+            }
+            .result > .head > * {
+                display: inline-block;
+            }
+            .result > .subject {
+                font-weight: 600;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content-wrapper">
+            <div class="search-field">
+                <input id="search" type="search" />
+            </div>
+            <div class="results">
+            </div>
+        </div>
+        <script type="text/javascript">
+            let template = (data) => {
+                let templateNode = document.createElement('template');
+                templateNode.innerHTML = `
+                    <div class="result">
+                        <div class="head">
+                            <div class="from">${escape(data.from.join(', '))}</div>
+                            <div class="to">${escape(data.to.join(', '))}</div>
+                        </div>
+                        <div class="subject">${data.subject}</div>
+                        <div class="body">${data.body}</div>
+                    </div>
+                `;
+                return templateNode.content.childNodes;
+            };
+            let resultsElement = document.querySelector('.results');
+            let loadResults = async (query) => {
+                let response = await fetch("http://localhost:3000/api/?q=" + encodeURIComponent(query));
+                let json = await response.json();
+                while (resultsElement.firstChild) {
+                    resultsElement.removeChild(resultsElement.firstChild);
+                }
+                for (let hit of json.hits) {
+                    let result = template(hit.doc);
+                    resultsElement.append(...result);
+                }
+            }
+            document.querySelector("#search").addEventListener("input", async (event) => {
+                let searchString = event.target.value;
+                await loadResults(searchString);
+            });
+            loadResults(document.querySelector("#search").value);
+        </script>
+    </body>
+</html>
