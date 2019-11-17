@@ -41,7 +41,7 @@ use tantivy::IndexReader;
 use urlencoded::UrlEncodedQuery;
 
 pub fn run_serve_cli(matches: &ArgMatches) -> Result<(), String> {
-    let index_directory = PathBuf::from(matches.value_of("index").unwrap());
+    let index_directory = PathBuf::from(matches.value_of("index").unwrap_or("~/.test"));
     let port = value_t!(matches, "port", u16).unwrap_or(3000u16);
     let host_str = matches.value_of("host").unwrap_or("localhost");
     let host = format!("{}:{}", host_str, port);

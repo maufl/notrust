@@ -34,16 +34,17 @@
             </div>
         </div>
         <script type="text/javascript">
+            let safeHTML = (string) => string.replace('<', "&#60;").replace('>', "&#62;")
             let template = (data) => {
                 let templateNode = document.createElement('template');
                 templateNode.innerHTML = `
                     <div class="result">
                         <div class="head">
-                            <div class="from">${escape(data.from.join(', '))}</div>
-                            <div class="to">${escape(data.to.join(', '))}</div>
+                            <div class="from">${safeHTML(data.from.join(', '))}</div>
+                            <div class="to">${safeHTML(data.to.join(', '))}</div>
                         </div>
                         <div class="subject">${data.subject}</div>
-                        <div class="body">${data.body}</div>
+                        <div class="body">${data.body[0].substring(0, 2000)} ...</div>
                     </div>
                 `;
                 return templateNode.content.childNodes;
